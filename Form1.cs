@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -30,16 +30,6 @@ namespace WindowsFormsApp3
         {
             if (DeKalbRadioBtn.Checked)
             {
-                foreach (object o in ResidenceListBox.Items)
-                {
-                    if (o is Property)
-                    {
-                        string obj = o.ToString();
-                        Property property = o as Property;
-                        propertyDictionary.Add(obj, property);
-                        theirResidence.Items.Add(obj);
-                    }
-                }
                 RadioButton button = sender as RadioButton;
 
                 string s = button.Text;
@@ -56,13 +46,11 @@ namespace WindowsFormsApp3
                     PersonListBox.Items.Add(person.basicInfo());
                }
 
-                //if (residenceType == typeof(House))
-                
+                //if (residenceType == typeof(House)
                     foreach (House house in Program.HouseList)
                     {
                         ResidenceListBox.Items.Add(house.basicPropertyInfo());
                     }
-                
 
 
                  foreach (Apartment apartment in Program.ApartmentList)
@@ -70,22 +58,19 @@ namespace WindowsFormsApp3
                     ResidenceListBox.Items.Add(apartment.apartmentPropertyInfo());
                 }
                 OutputArea.Text = "The residents and properties of DeKalb are now listed.";
+
+                foreach (Property p in Program.PropertyList)
+                {
+                    theirResidence.Items.Add(p.basicPropertyInfo());
+                }
+
+                foreach (object o in ResidenceListBox.Items)
+                {
+                    string propertyString = o.ToString();
+                    Property property = o as Property;
+                    propertyDictionary.Add(propertyString, property);
+                }
             }
-            //else if (SycamoreRadioBtn.Checked)
-            //{
-              //  PersonListBox.Items.Clear();
-                //ResidenceListBox.Items.Clear();
-
-           //     foreach(Person person in Program.SycamorePersonList)
-             //   {
-              //      PersonListBox.Items.Add(person);
-               // }
-
-               // foreach(Property property in Program.SycamorePropertyList)
-               // {
-                //    ResidenceListBox.Items.Add(property);
-               // }
-            //}
 
         }
         #endregion
@@ -96,6 +81,30 @@ namespace WindowsFormsApp3
             {
                 PersonListBox.Items.Clear();
                 ResidenceListBox.Items.Clear();
+                theirResidence.Items.Clear();
+
+                foreach (Person person in Program.SycamorePersonList)
+                {
+                    PersonListBox.Items.Add(person.basicInfo());
+                }
+
+                //if (residenceType == typeof(House)
+                foreach (House house in Program.SycamoreHouseList)
+                {
+                    ResidenceListBox.Items.Add(house.basicPropertyInfo());
+                }
+
+
+                foreach (Apartment apartment in Program.SycamoreApartmentList)
+                {
+                    ResidenceListBox.Items.Add(apartment.apartmentPropertyInfo());
+                }
+                OutputArea.Text = "The residents and properties of DeKalb are now listed.";
+
+                foreach (Property p in Program.SycamorePropertyList)
+                {
+                    theirResidence.Items.Add(p.basicPropertyInfo());
+                }
 
                 OutputArea.Text = "The residents and properties of Sycamore are now listed.";
             }
@@ -105,23 +114,19 @@ namespace WindowsFormsApp3
         {
             object selectedItem = PersonListBox.SelectedItem;
 
-            Property propertySelection = selectedItem as Property;
+            //            Property propertySelection = selectedItem as Property;
 
+        /*    Property p = Program.PropertyList.Find(findProperty => findProperty.streetAddr == PersonListBox.SelectedItem.ToString());
+            foreach(Person person in Program.PersonList.Where(x => x.))
+            OutputArea.Text = $"{selectedItem}, who resides at: {p}"; */
 
-            //selectedItem = person.ToString();
-            OutputArea.Text = $"{selectedItem}, who resides at: ";
             
-          /*  foreach(uint id in propertySelection.ResidenceIDs)
-            {
-                Property property = selectedCommunity.Properties.Where(p => p.id == id).FirstOrDefault();
-                OutputArea.Text = $"\t{property.streetAddr}";
-            }*/
-
+            /*
            foreach(Property p in Program.PropertyList)
            {
             propertySelection = p;
             OutputArea.Text = selectedItem + " who resides at: " + p.streetAddr;    
-           }
+           }*/
 
         }
 
@@ -201,9 +206,6 @@ namespace WindowsFormsApp3
                + " now resides at the property of "
                + selectedProperty.Substring(0, propertyStringIndex);
 
-              //  Person person = selectedResident as Person;
-               // AddPerson(person);
-
             }
 
             else
@@ -235,7 +237,7 @@ namespace WindowsFormsApp3
 
         private void NewResidentBtn_Click(object sender, EventArgs e)
         {
-           /* OutputArea.Clear();
+            OutputArea.Clear();
 
             string newResidentName = newResident.Text;
             string newResidentOccupation = theirOccupation.Text;
@@ -257,11 +259,8 @@ namespace WindowsFormsApp3
                 OutputArea.Text = "You have not selected a residence";
             }
 
-            uint identificationNumber = selectedCommunity.residents.LastOrDefault().id + 1;
-
-            Property property = propertyDictionary[newResidentID];
-            Person person = new Person(identificationNumber, newResidentName, newResidentOccupation, newResidentBirthday, property.id);
-
+            Person person = new Person(newResidentName, newResidentOccupation, newResidentBirthday);
+            
             if(!selectedCommunity.AddPerson(person))
             {
                 OutputArea.Text = "Unable to add this resident.";
@@ -269,11 +268,35 @@ namespace WindowsFormsApp3
 
             else
             {
-                PersonListBox.Items.Add(person);
+                PersonListBox.Items.Add(person.basicInfo());
                 Program.PersonList.Add(person);
 
-                OutputArea.Text = $"Success! {person.firstName} has been added as a resident to {selectedCommunity.name}!";
-            }*/
+                OutputArea.Text = $"Success! {newResident.Text} has been added as a resident to {selectedCommunity.name}!";
+            }
+        }
+
+        private void SubmitPropertyBtn_Click(object sender, EventArgs e)
+        {
+            string s = streetAddressTextBox.Text;
+
+            if (s.Length == 0)
+            {
+                OutputArea.Text = "Please do not leave the address field blank!";
+            }
+
+            uint sqft = decimal.ToUInt32(squareFootage.Value);
+            uint baths = decimal.ToUInt32(Bathrooms.Value);
+            uint beds = decimal.ToUInt32(Bedrooms.Value);
+
+
+        }
+
+        private void theirResidence_TextChanged(object sender, EventArgs e)
+        {
+            if (propertyDictionary.ContainsKey(theirResidence.Text))
+            {     return;     }
+
+            theirResidence.SelectedIndex = -1;
         }
     }
 }
